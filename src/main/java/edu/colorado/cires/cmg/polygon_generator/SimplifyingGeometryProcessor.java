@@ -1,11 +1,10 @@
-package edu.colorado.cires.cmg.hullgen;
+package edu.colorado.cires.cmg.polygon_generator;
 
 import com.uber.h3core.H3Core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.simplify.DouglasPeuckerSimplifier;

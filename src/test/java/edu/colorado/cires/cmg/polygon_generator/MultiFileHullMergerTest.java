@@ -1,4 +1,4 @@
-package edu.colorado.cires.cmg.hullgen;
+package edu.colorado.cires.cmg.polygon_generator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

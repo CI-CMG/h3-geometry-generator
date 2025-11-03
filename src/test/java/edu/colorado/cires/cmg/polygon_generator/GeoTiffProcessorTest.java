@@ -1,4 +1,4 @@
-package edu.colorado.cires.cmg.hullgen;
+package edu.colorado.cires.cmg.polygon_generator;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -10,29 +10,27 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.locationtech.jts.geom.PrecisionModel;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CSVProcessorTest {
+public class GeoTiffProcessorTest {
 
   final Path TEST_DIR = Paths.get("src/test/resources");
-  final String delimiters = "[, ]";
   final int H3_RESOLUTION = 8;
-  final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+  final int pixelArea = 10000;
+  final GeometryFactory geometryFactory = new GeometryFactory();
   final double distanceTolerance = 0.007;
   final double deltaDistanceTolerance = 0.001;
   final int maxHullPointsAllowed = 10000;
 
   @Test
   public void testSmallFileCompleteHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("small_file.csv").toFile();
-
+    final File TEST_FILE = TEST_DIR.resolve("small_file.tif").toFile();
     CompleteGeometryProcessor geometryProcessor = new CompleteGeometryProcessor(H3_RESOLUTION, geometryFactory);
     CompleteHull hull = new CompleteHull(geometryProcessor);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor = new GeoTiffProcessor(pixelArea, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     assertEquals("Polygon", outputGeometry.getGeometryType());
     assertTrue(outputGeometry.isValid());
@@ -41,15 +39,15 @@ public class CSVProcessorTest {
 
   @Test
   public void testSmallFileSimplifiedHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("small_file.csv").toFile();
+    final File TEST_FILE = TEST_DIR.resolve("small_file.tif").toFile();
 
     SimplifyingGeometryProcessor geometryProcessor = new SimplifyingGeometryProcessor(
         H3_RESOLUTION, geometryFactory, distanceTolerance, deltaDistanceTolerance, maxHullPointsAllowed
     );
     CompleteHull hull = new CompleteHull(geometryProcessor);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor = new GeoTiffProcessor(pixelArea, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     assertEquals("Polygon", outputGeometry.getGeometryType());
     assertTrue(outputGeometry.isValid());
@@ -59,16 +57,16 @@ public class CSVProcessorTest {
 
   @Test
   public void testSmallFileSimplifiedBufferedHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("small_file.csv").toFile();
+    final File TEST_FILE = TEST_DIR.resolve("small_file.tif").toFile();
     final int pointBufferSize = 100;
 
     SimplifyingGeometryProcessor geometryProcessor = new SimplifyingGeometryProcessor(
         H3_RESOLUTION, geometryFactory, 0.01, deltaDistanceTolerance, maxHullPointsAllowed
     );
     BufferedHull hull = new BufferedHull(geometryProcessor, pointBufferSize);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor= new GeoTiffProcessor(pixelArea, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     assertEquals("Polygon", outputGeometry.getGeometryType());
     assertTrue(outputGeometry.isValid());
@@ -78,13 +76,13 @@ public class CSVProcessorTest {
 
   @Test
   public void testLargeFileCompleteHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("large_file.csv").toFile();
+    final File TEST_FILE = TEST_DIR.resolve("large_file.tif").toFile();
 
     CompleteGeometryProcessor geometryProcessor = new CompleteGeometryProcessor(H3_RESOLUTION, geometryFactory);
     CompleteHull hull = new CompleteHull(geometryProcessor);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor = new GeoTiffProcessor(pixelArea, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     assertEquals("MultiPolygon", outputGeometry.getGeometryType());
     assertTrue(outputGeometry.getNumPoints() < maxHullPointsAllowed);
@@ -98,14 +96,13 @@ public class CSVProcessorTest {
 
   @Test
   public void testKeepHolesCompleteHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("hole.csv").toFile();
+    final File TEST_FILE = TEST_DIR.resolve("hole.tif").toFile();
 
     CompleteGeometryProcessor geometryProcessor = new CompleteGeometryProcessor(H3_RESOLUTION, geometryFactory, true);
     CompleteHull hull = new CompleteHull(geometryProcessor);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor = new GeoTiffProcessor(100, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
-
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     Coordinate coordinate = new Coordinate();
     coordinate.setX(0);
@@ -117,15 +114,15 @@ public class CSVProcessorTest {
 
   @Test
   public void testLargeFileSimplifiedHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("large_file.csv").toFile();
+    final File TEST_FILE = TEST_DIR.resolve("large_file.tif").toFile();
 
     SimplifyingGeometryProcessor geometryProcessor = new SimplifyingGeometryProcessor(
         H3_RESOLUTION, geometryFactory, distanceTolerance, deltaDistanceTolerance, maxHullPointsAllowed
     );
     CompleteHull hull = new CompleteHull(geometryProcessor);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor = new GeoTiffProcessor(pixelArea, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     assertEquals("MultiPolygon", outputGeometry.getGeometryType());
     assertTrue(outputGeometry.getNumPoints() < maxHullPointsAllowed);
@@ -139,15 +136,15 @@ public class CSVProcessorTest {
 
   @Test
   public void testKeepHolesSimplifiedHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("hole.csv").toFile();
+    final File TEST_FILE = TEST_DIR.resolve("hole.tif").toFile();
 
     SimplifyingGeometryProcessor geometryProcessor = new SimplifyingGeometryProcessor(
-        H3_RESOLUTION, geometryFactory, distanceTolerance, deltaDistanceTolerance, maxHullPointsAllowed, true
+        H3_RESOLUTION, geometryFactory, 0.00001, 0.000001, maxHullPointsAllowed, true
     );
     CompleteHull hull = new CompleteHull(geometryProcessor);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor = new GeoTiffProcessor(100, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     Coordinate coordinate = new Coordinate();
     coordinate.setX(0);
@@ -159,16 +156,16 @@ public class CSVProcessorTest {
 
   @Test
   public void testLargeFileSimplifiedBufferedHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("large_file.csv").toFile();
+    final File TEST_FILE = TEST_DIR.resolve("large_file.tif").toFile();
     final int pointBufferSize = 10000;
 
     SimplifyingGeometryProcessor geometryProcessor = new SimplifyingGeometryProcessor(
-        H3_RESOLUTION, geometryFactory, 0.01, deltaDistanceTolerance, maxHullPointsAllowed
+        H3_RESOLUTION, geometryFactory, distanceTolerance, deltaDistanceTolerance, maxHullPointsAllowed
     );
     BufferedHull hull = new BufferedHull(geometryProcessor, pointBufferSize);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor = new GeoTiffProcessor(pixelArea, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     assertEquals("MultiPolygon", outputGeometry.getGeometryType());
     assertTrue(outputGeometry.getNumPoints() < maxHullPointsAllowed);
@@ -182,16 +179,16 @@ public class CSVProcessorTest {
 
   @Test
   public void testKeepHolesSimplifiedBufferedHull() throws IOException {
-    final File TEST_FILE = TEST_DIR.resolve("hole.csv").toFile();
+    final File TEST_FILE = TEST_DIR.resolve("hole.tif").toFile();
     final int pointBufferSize = 10000;
 
     SimplifyingGeometryProcessor geometryProcessor = new SimplifyingGeometryProcessor(
-        H3_RESOLUTION, geometryFactory, 0.01, deltaDistanceTolerance, maxHullPointsAllowed, true
+        H3_RESOLUTION, geometryFactory, 0.00001, 0.000001, maxHullPointsAllowed, true
     );
     BufferedHull hull = new BufferedHull(geometryProcessor, pointBufferSize);
-    CSVProcessor csvProcessor = new CSVProcessor(delimiters, hull);
+    GeoTiffProcessor geoTiffProcessor = new GeoTiffProcessor(100, hull);
 
-    Geometry outputGeometry = csvProcessor.process(TEST_FILE);
+    Geometry outputGeometry = geoTiffProcessor.process(TEST_FILE);
 
     Coordinate coordinate = new Coordinate();
     coordinate.setX(0);

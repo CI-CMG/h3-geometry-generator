@@ -1,4 +1,4 @@
-package edu.colorado.cires.cmg.hullgen;
+package edu.colorado.cires.cmg.polygon_generator;
 
 import java.io.File;
 import java.io.IOException;

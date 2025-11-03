@@ -1,4 +1,4 @@
-package edu.colorado.cires.cmg.hullgen;
+package edu.colorado.cires.cmg.polygon_generator;
 
 /**
  * Implementation of {@link BaseHull} which processes all H3 ids at once

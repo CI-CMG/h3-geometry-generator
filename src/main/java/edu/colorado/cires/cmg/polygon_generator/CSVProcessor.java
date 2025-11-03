@@ -1,4 +1,4 @@
-package edu.colorado.cires.cmg.hullgen;
+package edu.colorado.cires.cmg.polygon_generator;
 
 import com.uber.h3core.util.GeoCoord;
 import java.io.BufferedReader;
