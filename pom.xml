@@ -58,7 +58,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <jts.version>1.20.0</jts.version>
-    <h3.version>3.7.0</h3.version>
+    <h3.version>3.7.2</h3.version>
 
     <jupiter.version>5.8.2</jupiter.version>
 
