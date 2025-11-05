@@ -8,9 +8,9 @@
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description>
-    The h3-hull-generator computes approximate concave hulls and polygons using Uber's H3 library and JTS.
+    The h3-geometry-generator computes approximate geometries from csv or tif coordinates using Uber's H3 library and JTS.
   </description>
-  <url>https://github.com/CI-CMG/h3-hull-generator</url>
+  <url>https://github.com/CI-CMG/h3-geometry-generator</url>
 
   <licenses>
     <license>
