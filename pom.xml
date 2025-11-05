@@ -28,9 +28,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:CI-CMG/h3-hull-generator.git</connection>
-    <developerConnection>scm:git:git@github.com:CI-CMG/h3-hull-generator.git</developerConnection>
-    <url>https://github.com/CI-CMG/h3-hull-generator</url>
+    <connection>scm:git:https://github.com/CI-CMG/h3-geometry-generator.git</connection>
+    <developerConnection>scm:git:https://github.com/CI-CMG/h3-geometry-generator.git</developerConnection>
+    <url>https://github.com/CI-CMG/h3-geometry-generator</url>
     <tag>HEAD</tag>
   </scm>
 
