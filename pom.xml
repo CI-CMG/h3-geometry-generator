@@ -7,9 +7,7 @@
   <version>4.0.0-SNAPSHOT</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>
-    The h3-geometry-generator computes approximate geometries from csv or tif coordinates using Uber's H3 library and JTS.
-  </description>
+  <description>The h3-geometry-generator computes approximate geometries from csv or tif coordinates using Uber's H3 library and JTS.</description>
   <url>https://github.com/CI-CMG/h3-geometry-generator</url>
 
   <licenses>
@@ -62,7 +60,6 @@
 
     <jupiter.version>5.8.2</jupiter.version>
 
-    <sign.serverId>gpg-sign</sign.serverId>
     <git.username />
     <git.password />
   </properties>
@@ -353,6 +350,9 @@
           <plugin>
             <groupId>org.simplify4u.plugins</groupId>
             <artifactId>sign-maven-plugin</artifactId>
+            <configuration>
+              <serverId>gpg-sign</serverId>
+            </configuration>
             <executions>
               <execution>
                 <goals>
