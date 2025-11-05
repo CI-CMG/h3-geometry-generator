@@ -66,17 +66,14 @@
 
   <reporting>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
-
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
-
     </plugins>
   </reporting>
 
@@ -86,26 +83,22 @@
       <artifactId>jts-core</artifactId>
       <version>${jts.version}</version>
     </dependency>
-
     <dependency>
       <groupId>com.uber</groupId>
       <artifactId>h3</artifactId>
       <version>${h3.version}</version>
     </dependency>
-
     <dependency>
       <groupId>io.github.ci-cmg</groupId>
       <artifactId>h3-darwin-arm64</artifactId>
       <version>3.7.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <version>${jupiter.version}</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-epsg-hsql</artifactId>
@@ -126,7 +119,6 @@
       <artifactId>commons-io</artifactId>
       <version>2.20.0</version>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -157,58 +149,49 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.2</version>
         </plugin>
-
         <plugin>
           <artifactId>maven-antrun-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>3.1.1</version>
         </plugin>
-
         <plugin>
           <groupId>pl.project13.maven</groupId>
           <artifactId>git-commit-id-plugin</artifactId>
           <version>4.9.10</version>
         </plugin>
-
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.8.7</version>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
           <version>3.2.1</version>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <version>3.9.1</version>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.1.2</version>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${javadoc.version}</version>
         </plugin>
-
       </plugins>
     </pluginManagement>
-    <plugins>
 
+    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
@@ -223,7 +206,6 @@
           <password>${git.password}</password>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -243,7 +225,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
@@ -255,7 +236,6 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
 
@@ -292,7 +272,6 @@
       <id>release</id>
       <build>
         <plugins>
-
           <plugin>
             <groupId>pl.project13.maven</groupId>
             <artifactId>git-commit-id-plugin</artifactId>
@@ -320,7 +299,6 @@
               </replacementProperties>
             </configuration>
           </plugin>
-
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
@@ -333,7 +311,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
@@ -346,7 +323,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.simplify4u.plugins</groupId>
             <artifactId>sign-maven-plugin</artifactId>
@@ -364,7 +340,6 @@
               </execution>
             </executions>
           </plugin>
-
         </plugins>
       </build>
     </profile>
@@ -373,12 +348,10 @@
       <id>site-publish</id>
       <build>
         <plugins>
-
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-site-plugin</artifactId>
           </plugin>
-
           <plugin>
             <artifactId>maven-resources-plugin</artifactId>
             <executions>
@@ -404,7 +377,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
@@ -463,11 +435,8 @@
               </execution>
             </executions>
           </plugin>
-
         </plugins>
       </build>
     </profile>
-
   </profiles>
-
 </project>
