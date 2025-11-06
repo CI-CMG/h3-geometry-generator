@@ -21,7 +21,7 @@ class CSVCoordinateReaderTest {
     3.0,4.0
     """);
 
-    CSVCoordinateReader csvReader = new CSVCoordinateReader("LNG", "LAT", ',');
+    CSVCoordinateReader csvReader = new CSVCoordinateReader(csv -> csv.get(0), csv -> csv.get(1), ',');
 
     assertEquals(
       Set.of(

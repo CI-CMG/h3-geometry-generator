@@ -35,9 +35,9 @@ class GeometryGeneratorTest {
       InputStream csvStream = Files.newInputStream(Paths.get("%s.csv".formatted(filePath)));
       Reader csvReader = new InputStreamReader(csvStream);
       ImageInputStream geoTiffStream = ImageIO.createImageInputStream(new File("%s.tif".formatted(filePath)));
-      CloseableGeotiffReader geotiffReader = new CloseableGeotiffReader(geoTiffStream);
+      CloseableGeotiffReader geotiffReader = new CloseableGeotiffReader(geoTiffStream)
     ) {
-      FailableFunction<Reader, Stream<Coordinate>, IOException> csvCoordinateReader = new CSVCoordinateReader("LNG", "LAT", ',');
+      FailableFunction<Reader, Stream<Coordinate>, IOException> csvCoordinateReader = new CSVCoordinateReader(csv -> csv.get(0), csv -> csv.get(1), ',');
 
       GeometryGenerator geometryGenerator = new GeometryGenerator(
         H3JTSConverter.create(H3Core.newInstance(), 7, geometryFactory::createPolygon),

@@ -71,7 +71,7 @@ GeometryGenerator generator = new GeometryGenerator(
 ```java
 import edu.colorado.cires.cmg.geometry_generator.reader.csv.CSVCoordinateReader;
 
-CSVCoordinateReader csvCoordinateReader = new CSVCoordinateReader("LNG", "LAT", ',');
+CSVCoordinateReader csvCoordinateReader = new CSVCoordinateReader(record -> record.get(0), record -> record.get(1), ',');
 
 try (
   InputStream inputStream = Files.newInputStream(...);

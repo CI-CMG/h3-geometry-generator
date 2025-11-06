@@ -2,9 +2,10 @@ package edu.colorado.cires.cmg.geometry_generator.reader.csv;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.function.FailableFunction;
 import org.locationtech.jts.geom.Coordinate;
 
@@ -13,19 +14,19 @@ import org.locationtech.jts.geom.Coordinate;
  */
 public class CSVCoordinateReader implements FailableFunction<Reader, Stream<Coordinate>, IOException> {
 
-  private final String longitudeHeader;
-  private final String latitudeHeader;
+  private final Function<CSVRecord, String> longitudeResolver;
+  private final Function<CSVRecord, String> latitudeResolver;
   private final char delimiter;
 
   /**
    * Creates a {@link CSVCoordinateReader}
-   * @param longitudeHeader header name for longitude values
-   * @param latitudeHeader header name for latitude values
+   * @param longitudeResolver header name for longitude values
+   * @param latitudeResolver header name for latitude values
    * @param delimiter csv delimiter
    */
-  public CSVCoordinateReader(String longitudeHeader, String latitudeHeader, char delimiter) {
-    this.longitudeHeader = longitudeHeader;
-    this.latitudeHeader = latitudeHeader;
+  public CSVCoordinateReader(Function<CSVRecord, String> longitudeResolver, Function<CSVRecord, String> latitudeResolver, char delimiter) {
+    this.longitudeResolver = longitudeResolver;
+    this.latitudeResolver = latitudeResolver;
     this.delimiter = delimiter;
   }
 
@@ -44,14 +45,10 @@ public class CSVCoordinateReader implements FailableFunction<Reader, Stream<Coor
       .build();
 
     return format.parse(reader).stream()
-      .map(record -> {
-        Map<String, String> rowData = record.toMap();
-
-        return new Coordinate(
-          Double.parseDouble(rowData.get(longitudeHeader)),
-          Double.parseDouble(rowData.get(latitudeHeader))
-        );
-      });
+      .map(record -> new Coordinate(
+        Double.parseDouble(longitudeResolver.apply(record)),
+        Double.parseDouble(latitudeResolver.apply(record))
+      ));
   }
 
 }
