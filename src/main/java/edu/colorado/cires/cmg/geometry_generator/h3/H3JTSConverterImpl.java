@@ -15,15 +15,15 @@ class H3JTSConverterImpl implements H3JTSConverter {
 
   private final int resolution;
   private final H3Core h3Core;
-  private final Function<Coordinate[], Geometry> geometryFactory;
+  private final Function<Coordinate[], Polygon> geometryFactory;
 
   /**
    * Creates a {@link H3JTSConverterImpl}
    * @param h3Core {@link H3Core} for generating / analyzing H3 cells
    * @param resolution H3 resolution assumed by resulting converter (0-15)
-   * @param geometryFactory {@link Function} for creating a {@link Geometry} from an array of {@link Coordinate}
+   * @param geometryFactory {@link Function} for creating a {@link Polygon} from an array of {@link Coordinate}
    */
-  H3JTSConverterImpl(int resolution, H3Core h3Core, Function<Coordinate[], Geometry> geometryFactory) {
+  H3JTSConverterImpl(int resolution, H3Core h3Core, Function<Coordinate[], Polygon> geometryFactory) {
     this.resolution = resolution;
     this.h3Core = h3Core;
     this.geometryFactory = geometryFactory;
@@ -52,7 +52,7 @@ class H3JTSConverterImpl implements H3JTSConverter {
 
     coordinates.add(coordinates.get(0));
 
-    return (Polygon) geometryFactory.apply(
+    return geometryFactory.apply(
       coordinates.toArray(Coordinate[]::new)
     );
   }

@@ -9,15 +9,15 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
 
 class H3JTSConverterImplTest {
 
   private final long cell = 614552348391374847L;
   private final int resolution = 8;
   private final GeometryFactory geometryFactory = new GeometryFactory();
-  private final Function<Coordinate[], Geometry> polygonFactory = geometryFactory::createPolygon;
+  private final Function<Coordinate[], Polygon> polygonFactory = geometryFactory::createPolygon;
   private final H3Core h3Core;
 
   {

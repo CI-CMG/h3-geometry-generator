@@ -32,7 +32,7 @@ public interface H3JTSConverter {
    * @param geometryFactory {@link Function} for creating a {@link Geometry} from an array of {@link Coordinate}
    * @return The default implementation of {@link H3JTSConverter}
    */
-  static H3JTSConverter create(H3Core h3Core, int resolution, Function<Coordinate[], Geometry> geometryFactory) {
+  static H3JTSConverter create(H3Core h3Core, int resolution, Function<Coordinate[], Polygon> geometryFactory) {
     return new H3JTSConverterImpl(resolution, h3Core, geometryFactory);
   }
 
