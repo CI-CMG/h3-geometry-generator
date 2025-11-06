@@ -34,6 +34,8 @@ mvn clean install
 ```java
 import com.uber.h3core.H3Core;
 import edu.colorado.cires.cmg.geometry_generator.GeometryGenerator;
+import edu.colorado.cires.cmg.geometry_generator.collector.CellCollector;
+import edu.colorado.cires.cmg.geometry_generator.collector.DouglasPeuckerCellCollector;
 import edu.colorado.cires.cmg.geometry_generator.h3.H3JTSConverter;
 import edu.colorado.cires.cmg.geometry_generator.reducer.DouglasPeuckerReducer;
 import org.locationtech.jts.geom.Geometry;
@@ -44,26 +46,24 @@ GeometryFactory geometryFactory = new GeometryFactory();
 H3JTSConverter converter = H3JTSConverter.create(
   H3Core.newInstance(),
   8, // H3 resolution (0-15)
-  geometryFactory::createPolygon // method for creating polygons representing H3 hexagons from JTS Coordinates 
+  geometryFactory
 );
 
 GeometryGenerator generator = new GeometryGenerator(
   converter,
-  Geometry::union,
-  () -> geometryFactory.createEmpty(2) // initializes result as an empty polygon
+  () -> new CellCollector(converter::cellsToMultiPolygon) // transforms H3 indices to a MultiPolygon
 );
 
-// a generator can also be configured to return a further simplified result
-DouglasPeuckerReducer reducer = new DouglasPeuckerReducer(
-  100, // maximum allowed points in output geometry
-  0.01, // Douglas-Peucker algorithm distance tolerance
-  0.001 // interval to increase distance tolerance when point threshold is exceeded
-);
-
+// a collector can also be configured to return a further simplified result
 GeometryGenerator generator = new GeometryGenerator(
   converter,
   reducer,
-  () -> geometryFactory.createEmpty(2)
+  () -> new DouglasPeuckerCellCollector(
+    converter::cellsToMultiPolygon,
+    100, // maximum points in resulting geometry
+    0.01, // Douglas-Peucker algorithm distance tolerance
+    0.001 // interval to increase distance tolerance when point threshold is exceeded
+  )
 );
 ```
 

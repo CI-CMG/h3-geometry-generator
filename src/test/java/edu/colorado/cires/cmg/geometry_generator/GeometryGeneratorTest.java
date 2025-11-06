@@ -3,6 +3,7 @@ package edu.colorado.cires.cmg.geometry_generator;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.uber.h3core.H3Core;
+import edu.colorado.cires.cmg.geometry_generator.collector.DouglasPeuckerCellCollector;
 import edu.colorado.cires.cmg.geometry_generator.h3.H3JTSConverter;
 import edu.colorado.cires.cmg.geometry_generator.reader.csv.CSVCoordinateReader;
 import edu.colorado.cires.cmg.geometry_generator.reader.tif.CloseableGeotiffReader;
@@ -21,7 +22,6 @@ import org.apache.commons.lang3.function.FailableFunction;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 
 class GeometryGeneratorTest {
@@ -39,10 +39,11 @@ class GeometryGeneratorTest {
     ) {
       FailableFunction<Reader, Stream<Coordinate>, IOException> csvCoordinateReader = new CSVCoordinateReader(csv -> csv.get(0), csv -> csv.get(1), ',');
 
+      H3JTSConverter converter = H3JTSConverter.create(H3Core.newInstance(), 7, geometryFactory);
+
       GeometryGenerator geometryGenerator = new GeometryGenerator(
-        H3JTSConverter.create(H3Core.newInstance(), 7, geometryFactory::createPolygon),
-        Geometry::union,
-        () -> geometryFactory.createEmpty(2)
+        converter,
+        () -> new DouglasPeuckerCellCollector(converter::cellsToMultiPolygon, 1000, 0.01, 0.01)
       );
 
       assertTrue(
