@@ -8,4 +8,12 @@
     <packageUrl regex="true">^pkg:maven/org\.apache\.commons/commons\-math3@.*$</packageUrl>
     <cve>CVE-2021-37533</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: org.eclipse.emf.ecore.xmi-2.15.0.jar
+   reason: project not an IDE or IDE plugin
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.eclipse\.emf/org\.eclipse\.emf\.ecore\.xmi@.*$</packageUrl>
+    <vulnerabilityName>CVE-2023-4218</vulnerabilityName>
+  </suppress>
 </suppressions>
