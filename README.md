@@ -1,6 +1,6 @@
 # h3-hull-generator
 
-The h3-hull-generator computes approximate concave hulls using Uber's H3 library and JTS.
+The h3-geometry-generator computes approximate geometries from csv or tif coordinates using Uber's H3 library and JTS.
 
 ## Adding to your project
 
@@ -9,13 +9,13 @@ Add the following dependency to your pom.xml
 ```xml
 <dependency>
   <groupId>io.github.ci-cmg</groupId>
-  <artifactId>h3-hull-generator</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <artifactId>h3-geometry-generator</artifactId>
+  <version>4.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
 ## Runtime Requirements
-* Java 8
+* Java 17
 
 ## Building From Source
 Maven 3.6.0+ is required.
@@ -24,79 +24,76 @@ mvn clean install
 ```
 
 ## Supported Input File Formats
-* CSV (longitude/latitude column order)
-* GeoTiff
-
-## Supported Output File Formats
-* WKT
-* GeoJSON
+* csv
+* tif
 
 ## Usage
 
-### Generate hull from CSV coordinates and write to GeoJSON
+### Setup Geometry Generator
+
 ```java
-int h3Resolution = 8;
-String delimiters = "[, ]";
+import com.uber.h3core.H3Core;
+import edu.colorado.cires.cmg.geometry_generator.GeometryGenerator;
+import edu.colorado.cires.cmg.geometry_generator.h3.H3JTSConverter;
+import edu.colorado.cires.cmg.geometry_generator.reducer.DouglasPeuckerReducer;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+
 GeometryFactory geometryFactory = new GeometryFactory();
-GeometryProcessor geometryProcessor = new CompleteGeometryProcessor(h3Resolution, geometryFactory);
-Hull hull = new CompleteHull(geometryProcessor);
-InputFileProcessor inputFileProcessor = new CSVProcessor(delimiters, hull);
 
-OutputFileWriter outputFileWriter = new GeoJSONWriter();
+H3JTSConverter converter = H3JTSConverter.create(
+  H3Core.newInstance(),
+  8, // H3 resolution (0-15)
+  geometryFactory::createPolygon // method for creating polygons representing H3 hexagons from JTS Coordinates 
+);
 
-HullGenerator hullGenerator = new HullGenerator(inputFileProcessor, outputFileWriter);
-hullGenerator.generate(inputFile, outputFile);
-```
+GeometryGenerator generator = new GeometryGenerator(
+  converter,
+  Geometry::union,
+  () -> geometryFactory.createEmpty(2) // initializes result as an empty polygon
+);
 
-### Generate hull from GeoTiff image and write to WKT
-```java
-int h3Resolution = 8;
-int pixelArea = 1000;
-GeometryFactory geometryFactory = new GeometryFactory();
-GeometryProcessor geometryProcessor = new CompleteGeometryProcessor(h3Resolution, geometryFactory);
-Hull hull = new CompleteHull(geometryProcessor);
-InputFileProcessor inputFileProcessor = new GeoTiffProcessor(pixelArea, hull);
+// a generator can also be configured to return a further simplified result
+DouglasPeuckerReducer reducer = new DouglasPeuckerReducer(
+  100, // maximum allowed points in output geometry
+  0.01, // Douglas-Peucker algorithm distance tolerance
+  0.001 // interval to increase distance tolerance when point threshold is exceeded
+);
 
-OutputFileWriter outputFileWriter = new WktWriter();
-
-HullGenerator hullGenerator = new HullGenerator(inputFileProcessor, outputFileWriter);
-hullGenerator.generate(inputFile, outputFile);
-```
-
-### Get output hull as JTS Geometry
-```java
-int h3Resolution = 8;
-String delimiters = "[, ]";
-GeometryFactory geometryFactory = new GeometryFactory();
-GeometryProcessor geometryProcessor = new CompleteGeometryProcessor(h3Resolution, geometryFactory);
-Hull hull = new CompleteHull(geometryProcessor);
-InputFileProcessor inputFileProcessor = new CSVProcessor(delimiters, hull);
-Geometry geometry = inputFileProcessor.process(inputFile);
-```
-
-## Advanced Usage
-
-### Self-simplifying GeometryGenerator
-```java
-int h3Resolution = 8;
-GeometryFactory geometryFactory = new GeometryFactory();
-double distanceTolerance = 0.07;
-double deltaDistanceTolerance = 0.001;
-int maxGeometryPointsAllowed = 10000;
-GeometryProcessor geometryProcessor = new SimplifyingGeometryProcessor(
-    h3Resolution, geometryFactory, distanceTolerance, deltaDistanceTolerance, maxGeometryPointsAllowed  
+GeometryGenerator generator = new GeometryGenerator(
+  converter,
+  reducer,
+  () -> geometryFactory.createEmpty(2)
 );
 ```
 
-### Buffered Hull
+### Generate geometry from csv file
 ```java
-int pointBufferSize = 10000;
-Hull hull = new BufferedHull(geometryProcessor, pointBufferSize);
+import edu.colorado.cires.cmg.geometry_generator.reader.csv.CSVCoordinateReader;
+
+CSVCoordinateReader csvCoordinateReader = new CSVCoordinateReader("LNG", "LAT", ',');
+
+try (
+  InputStream inputStream = Files.newInputStream(...);
+  Reader reader = new InputStreamReader(inputStream)
+) {
+  Geometry geometry = generator.generate(reader, csvCoordinateReader);
+}
 ```
 
-### Merge hulls from multiple files
+### Generate geometry from tif
+
 ```java
-InputFileProcessor inputFileProcessor = new MultiFileHullMerger(
-        outputFileReader, geometryProcessor
-);
+import edu.colorado.cires.cmg.geometry_generator.reader.csv.CSVCoordinateReader;
+import edu.colorado.cires.cmg.geometry_generator.reader.tif.CloseableGeotiffReader;
+import edu.colorado.cires.cmg.geometry_generator.reader.tif.GeoTiffCoordinateReader;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+
+try(
+  ImageInputStream imageInputStream = ImageIO.createImageInputStream(new File(...));
+  CloseableGeotiffReader reader = new CloseableGeotiffReader(imageInputStream)
+){
+  Geometry geometry = generator.generate(reader, GeoTiffCoordinateReader::read);
+}
 ```
