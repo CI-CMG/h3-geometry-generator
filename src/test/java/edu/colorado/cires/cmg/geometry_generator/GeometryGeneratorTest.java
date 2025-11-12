@@ -15,13 +15,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
-import org.apache.commons.lang3.function.FailableFunction;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
 class GeometryGeneratorTest {
@@ -37,7 +34,7 @@ class GeometryGeneratorTest {
       ImageInputStream geoTiffStream = ImageIO.createImageInputStream(new File("%s.tif".formatted(filePath)));
       CloseableGeotiffReader geotiffReader = new CloseableGeotiffReader(geoTiffStream)
     ) {
-      FailableFunction<Reader, Stream<Coordinate>, IOException> csvCoordinateReader = new CSVCoordinateReader(csv -> csv.get(0), csv -> csv.get(1), ',');
+      CSVCoordinateReader csvCoordinateReader = new CSVCoordinateReader(csv -> csv.get(0), csv -> csv.get(1), ',');
 
       H3JTSConverter converter = H3JTSConverter.create(H3Core.newInstance(), 7, geometryFactory);
 
@@ -47,9 +44,9 @@ class GeometryGeneratorTest {
       );
 
       assertTrue(
-        geometryGenerator.generate(csvReader, csvCoordinateReader)
+        geometryGenerator.generate(csvCoordinateReader.read(csvReader))
           .difference(
-            geometryGenerator.generate(geotiffReader, GeoTiffCoordinateReader::read)
+            geometryGenerator.generate(GeoTiffCoordinateReader.read(geotiffReader))
           ).isEmpty()
       );
     }

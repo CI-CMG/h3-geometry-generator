@@ -77,7 +77,7 @@ try (
   InputStream inputStream = Files.newInputStream(...);
   Reader reader = new InputStreamReader(inputStream)
 ) {
-  Geometry geometry = generator.generate(reader, csvCoordinateReader);
+  Geometry geometry = generator.generate(csvCoordinateReader.read(reader));
 }
 ```
 
@@ -94,6 +94,6 @@ try(
   ImageInputStream imageInputStream = ImageIO.createImageInputStream(new File(...));
   CloseableGeotiffReader reader = new CloseableGeotiffReader(imageInputStream)
 ){
-  Geometry geometry = generator.generate(reader, GeoTiffCoordinateReader::read);
+  Geometry geometry = generator.generate(GeoTiffCoordinateReader.read(reader));
 }
 ```

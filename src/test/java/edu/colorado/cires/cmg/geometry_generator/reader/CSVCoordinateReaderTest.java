@@ -28,7 +28,7 @@ class CSVCoordinateReaderTest {
         new Coordinate(1, 2),
         new Coordinate(3, 4)
       ),
-      csvReader.apply(reader)
+      csvReader.read(reader)
         .collect(Collectors.toSet())
     );
   }

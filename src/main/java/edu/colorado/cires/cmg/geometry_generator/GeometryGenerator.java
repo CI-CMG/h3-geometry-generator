@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.function.FailableFunction;
+import org.apache.commons.lang3.function.FailableSupplier;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
@@ -31,13 +32,11 @@ public class GeometryGenerator {
    * 1. Reads coordinates from a source
    * 2. Converts coordinates to H3 indices
    * 3. Collects H3 indices into a MultiPolygon
-   * @param source {@link T} containing coordinates
-   * @param fileReader {@link FailableFunction} for reading coordinates from source
+   * @param coordinateStream {@link Stream<Coordinate>} containing coordinates
    * @return {@link Geometry} containing coordinates from source
-   * @throws IOException if coordinates cannot be read from source
    */
-  public <T> Geometry generate(T source, FailableFunction<T, Stream<Coordinate>, IOException> fileReader) throws IOException {
-    return fileReader.apply(source)
+  public Geometry generate(Stream<Coordinate> coordinateStream) {
+    return coordinateStream
       .map(h3JTSConverter::coordinateToCell)
       .distinct()
       .collect(cellCollectorSupplier.get());

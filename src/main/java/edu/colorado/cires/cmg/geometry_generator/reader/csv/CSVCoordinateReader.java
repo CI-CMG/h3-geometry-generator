@@ -12,7 +12,7 @@ import org.locationtech.jts.geom.Coordinate;
 /**
  * Reads coordinates from csv files
  */
-public class CSVCoordinateReader implements FailableFunction<Reader, Stream<Coordinate>, IOException> {
+public class CSVCoordinateReader {
 
   private final Function<CSVRecord, String> longitudeResolver;
   private final Function<CSVRecord, String> latitudeResolver;
@@ -36,8 +36,7 @@ public class CSVCoordinateReader implements FailableFunction<Reader, Stream<Coor
    * @return {@link Stream<Coordinate>} containing coordinates from csv file
    * @throws IOException if csv file cannot be read
    */
-  @Override
-  public Stream<Coordinate> apply(Reader reader) throws IOException {
+  public Stream<Coordinate> read(Reader reader) throws IOException {
     CSVFormat format = CSVFormat.DEFAULT.builder()
       .setHeader()
       .setSkipHeaderRecord(true)
