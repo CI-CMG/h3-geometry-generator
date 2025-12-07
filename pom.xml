@@ -4,7 +4,7 @@
 
   <groupId>io.github.ci-cmg</groupId>
   <artifactId>h3-geometry-generator</artifactId>
-  <version>4.0.2-SNAPSHOT</version>
+  <version>4.0.2</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description>The h3-geometry-generator computes approximate geometries from csv or tif coordinates using Uber's H3 library and JTS.</description>
@@ -29,7 +29,7 @@
     <connection>scm:git:https://github.com/CI-CMG/h3-geometry-generator.git</connection>
     <developerConnection>scm:git:https://github.com/CI-CMG/h3-geometry-generator.git</developerConnection>
     <url>https://github.com/CI-CMG/h3-geometry-generator</url>
-    <tag>4.0</tag>
+    <tag>v4.0.2</tag>
   </scm>
 
   <repositories>
