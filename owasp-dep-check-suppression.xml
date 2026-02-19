@@ -16,4 +16,13 @@
     <packageUrl regex="true">^pkg:maven/org\.eclipse\.emf/org\.eclipse\.emf\.ecore\.xmi@.*$</packageUrl>
     <vulnerabilityName>CVE-2023-4218</vulnerabilityName>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: aircompressor-0.27.jar
+   reason: issue mitigated by usage, cannot override aircompressor version due to library being renamed
+   and renamed library not being used by geotools
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/io\.airlift/aircompressor@.*$</packageUrl>
+    <vulnerabilityName>CVE-2025-67721</vulnerabilityName>
+  </suppress>
 </suppressions>
